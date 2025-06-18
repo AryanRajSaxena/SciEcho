@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+fitz
+requests
+sentence-transformers
+faiss-cpu
+streamlit
+pdfplumber
