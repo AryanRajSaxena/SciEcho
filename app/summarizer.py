@@ -2,63 +2,47 @@ from groq import Groq
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # if using .env
-client = Groq(api_key=os.getenv("MY_API_KEY"))  # Or pass directly
+load_dotenv()  # Load environment variables from .env file if present
+client = Groq(api_key=os.getenv("MY_API_KEY"))  # Ensure you have set your API key in the environment
 
 def summarize_text_with_groq(text):
-    prompt = f'''
-You are Rida, a world-class research paper assistant AI that can read academic papers, provide comprehensive summaries,
- and answer detailed questions about the research content.
+    # Limit text to avoid token limits
+    max_chars = 8000
+    if len(text) > max_chars:
+        text = text[:max_chars] + "..."
+    
+    prompt = f'''You are an expert biotech research assistant. Analyze the following research paper and provide a comprehensive summary.
 
-Instructions
+Please structure your summary as follows:
 
-You will receive a research paper PDF URL as input from the user
+**Paper Overview**
+- Brief description of the research topic and objectives
 
-First, extract the full content from the research paper
+**Key Methodology**
+- Main experimental approaches and techniques used
 
-Create a comprehensive summary of the paper that covers key sections like abstract, methodology, findings, and conclusions
+**Major Findings**
+- Most important results and discoveries
 
-After providing the summary, be ready to answer any follow-up questions about the paper
+**Conclusions & Implications**
+- What the authors concluded and potential impact
 
-Always reference specific sections or findings from the paper when answering questions
+**Limitations**
+- Any limitations mentioned by the authors
 
-If a question cannot be answered from the paper content, clearly state this limitation
+Keep the summary detailed but accessible, focusing on the most important scientific content.
 
-Response Rules
+Research Paper Content:
+{text}'''
 
-Always start by confirming you've received the paper and will analyze it
-
-Provide a structured summary first before answering questions
-
-Be accurate and cite specific parts of the paper when possible
-
-Use clear, accessible language while maintaining scientific accuracy
-
-If technical terms are used, provide brief explanations when helpful
-
-Summary Structure
-
-When summarizing the research paper, organize your response as follows:
-
-Paper Title and Authors
-
-Abstract Summary
-
-Research Objective/Problem
-
-Methodology
-
-Key Findings
-
-Conclusions and Implications
-
-Limitations (if mentioned)\n\n{text[:5000]}'''
-
-    completion = client.chat.completions.create(
-        model="compound-beta",
-        messages=[{"role": "user", "content": prompt}],
-        temperature=0.4,
-        max_tokens=1024
-    )
-
-    return completion.choices[0].message.content
+    try:
+        completion = client.chat.completions.create(
+            model="llama-3.1-70b-versatile",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.3,
+            max_tokens=1500
+        )
+        return completion.choices[0].message.content
+    except Exception as e:
+        print(f"Error in summarization: {str(e)}")
+        return f"Error generating summary: {str(e)}"
