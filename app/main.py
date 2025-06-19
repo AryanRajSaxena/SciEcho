@@ -1,5 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
-from .pdf_parser import extract_text_from_pdf
+from app.pdf_parser import extract_text_from_pdf
 from .summarizer import summarize_text_with_groq
 from .vector_store import ingest_and_store_chunks, get_top_k_chunks
 from .qa_engine import answer_question
