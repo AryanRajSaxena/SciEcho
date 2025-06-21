@@ -37,7 +37,7 @@ Research Paper Content:
 
     try:
         completion = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",
+            model="compound-beta",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.3,
             max_tokens=1500
