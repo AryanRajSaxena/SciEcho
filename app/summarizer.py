@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file if present
-client = Groq(api_key=os.getenv("MY_API_KEY"))  # Ensure you have set your API key in the environment
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))  # Ensure you have set your API key in the environment
 
 def summarize_text_with_groq(text):
     # Limit text to avoid token limits
