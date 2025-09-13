@@ -2,21 +2,19 @@ from groq import Groq
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Load environment variables from .env file if present
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))  # Ensure you have set your API key in the environment
+load_dotenv()
+
+def get_groq_client():
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY is not set in the environment")
+    return Groq(api_key=api_key)
 
 def answer_question(question, top_k_chunks):
+    client = get_groq_client()
     context = "\n\n".join(top_k_chunks)
     
-    prompt = f"""You are a biotech research assistant. Use the context below to answer the user's question accurately and comprehensively.
-
-Guidelines:
-- Base your answer strictly on the provided context
-- Reference specific sections or data when possible
-- If the question cannot be fully answered from the context, clearly state this
-- Provide detailed explanations for complex topics
-- Use clear formatting with bullet points or numbered lists when appropriate
-
+    prompt = f"""You are a biotech research assistant...
 Context from Research Paper:
 {context}
 
